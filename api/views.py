@@ -1,11 +1,11 @@
 from django.db.models import Q
 from rest_framework import status
-from api.models import Author, News
+from api.models import Author, Post
 from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 from rest_framework.decorators import api_view
 from django.core.exceptions import ObjectDoesNotExist
-from .serializers import AuthorSerializer, NewSerializer
+from .serializers import AuthorSerializer, PostSerializer
 
 
 @api_view(['GET', 'POST'])
@@ -53,18 +53,18 @@ def news_list(request):
     search = request.GET.get('filter', None)
 
     if search:
-        news = News.objects.filter(Q(title__contains=search) | Q(text__contains=search))
-        serializer = NewSerializer(news, many=True)
+        news = Post.objects.filter(Q(title__contains=search) | Q(text__contains=search))
+        serializer = PostSerializer(news, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     if request.method == 'GET':
-        news = News.objects.all()
-        serializer = NewSerializer(news, many=True)
+        news = Post.objects.all()
+        serializer = PostSerializer(news, many=True)
         return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
-        serializer = NewSerializer(data=data)
+        serializer = PostSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data, status=201)
@@ -74,15 +74,15 @@ def news_list(request):
 @api_view(['GET', 'PUT', 'DELETE'])
 def news_detail(request, pk):
     try:
-        new = News.objects.get(pk=pk)
+        new = Post.objects.get(pk=pk)
 
         if request.method == 'GET':
-            new_serializer = NewSerializer(new)
+            new_serializer = PostSerializer(new)
             return JsonResponse(new_serializer.data)
 
         elif request.method == 'PUT':
             author_data = JSONParser().parse(request)
-            new_serializer = NewSerializer(new, data=author_data)
+            new_serializer = PostSerializer(new, data=author_data)
             if new_serializer.is_valid():
                 new_serializer.save()
                 return JsonResponse(new_serializer.data)

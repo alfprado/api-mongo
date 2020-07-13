@@ -1,4 +1,4 @@
-from .models import News, Author
+from .models import Post, Author
 from rest_framework import serializers
 
 
@@ -8,9 +8,9 @@ class AuthorSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class NewSerializer(serializers.ModelSerializer):
+class PostSerializer(serializers.ModelSerializer):
     class Meta:
-        model = News
+        model = Post
         fields = ['id', 'title', 'text', 'author', 'created_date']
 
 

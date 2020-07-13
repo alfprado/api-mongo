@@ -9,7 +9,7 @@ class Author(models.Model):
         return self.name
 
 
-class News(models.Model):
+class Post(models.Model):
     title = models.CharField(max_length=100)
     text = models.TextField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE)
